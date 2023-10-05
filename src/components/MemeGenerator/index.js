@@ -4,9 +4,14 @@ import {
   MainContainer,
   Heading,
   InputElement,
-  labelElement,
-  selectTag,
-  optionElement,
+  LabelElement,
+  SelectTag,
+  OptionElement,
+  Button,
+  AppContainer,
+  MemesContainer,
+  Paragraph,
+  Form,
 } from './styledComponents'
 
 const fontSizesOptionsList = [
@@ -41,36 +46,87 @@ const fontSizesOptionsList = [
 ]
 
 class MemeGenerator extends Component {
+  state = {
+    inputImageUrl: '',
+    topText: '',
+    bottomText: '',
+    Size: '',
+    isClicked: false,
+  }
+
+  getTopText = event => {
+    this.setState({topText: event.target.value})
+  }
+
+  getMeme = () => {
+    this.setState({isClicked: true})
+  }
+
+  getBottomText = event => {
+    this.setState({bottomText: event.target.value})
+  }
+
+  onChangeImageUrl = event => {
+    this.setState({inputImageUrl: event.target.value})
+  }
+
+  onChangeSize = event => {
+    this.setState({Size: event.target.value})
+  }
+
   render() {
+    const {inputImageUrl, topText, bottomText, Size, isClicked} = this.state
+    const parsedSize = parseInt(Size)
+    console.log(parsedSize)
     return (
-      <MainContainer>
-        <Heading>Meme Generator</Heading>
-        <labelElement htmlFor="imageUrl">Image URl</labelElement>
-        <InputElement
-          type="text"
-          placeholder="Enter the Image URL"
-          id="imageUrl"
-        />
-        <labelElement htmlFor="topText">Top Text</labelElement>
-        <InputElement
-          type="text"
-          placeholder="Enter the Top Text"
-          id="topText"
-        />
-        <labelElement htmlFor="bottomText">Bottom Text</labelElement>
-        <InputElement
-          type="text"
-          placeholder="Enter the Bottom Text"
-          id="bottomText"
-        />
-        <selectTag>
-          {fontSizesOptionsList.map(each => (
-            <optionElement key={each.optionId} value={each.displayText}>
-              {each.displayText}
-            </optionElement>
-          ))}
-        </selectTag>
-      </MainContainer>
+      <AppContainer>
+        <MainContainer>
+          <Heading>Meme Generator</Heading>
+          <Form>
+            <LabelElement htmlFor="imageUrl">Image URl</LabelElement>
+            <InputElement
+              type="text"
+              placeholder="Enter the Image URL"
+              id="imageUrl"
+              value={inputImageUrl}
+              onChange={this.onChangeImageUrl}
+            />
+            <LabelElement htmlFor="topText">Top Text</LabelElement>
+            <InputElement
+              type="text"
+              placeholder="Enter the Top Text"
+              id="topText"
+              onChange={this.getTopText}
+              value={topText}
+            />
+            <LabelElement htmlFor="bottomText">Bottom Text</LabelElement>
+            <InputElement
+              type="text"
+              placeholder="Enter the Bottom Text"
+              id="bottomText"
+              onChange={this.getBottomText}
+              value={bottomText}
+            />
+            <LabelElement htmlFor="select">Font Size</LabelElement>
+            <SelectTag id="select" onChange={this.onChangeSize} value={Size}>
+              {fontSizesOptionsList.map(each => (
+                <OptionElement key={each.optionId} value={each.displayText}>
+                  {each.displayText}
+                </OptionElement>
+              ))}
+            </SelectTag>
+            <Button type="button" onClick={this.getMeme}>
+              Generate
+            </Button>
+          </Form>
+        </MainContainer>
+        {isClicked && (
+          <MemesContainer Url={inputImageUrl} data-testid="meme">
+            <Paragraph fontSize={parsedSize}>{topText}</Paragraph>
+            <Paragraph fontSize={parsedSize}>{bottomText}</Paragraph>
+          </MemesContainer>
+        )}
+      </AppContainer>
     )
   }
 }
